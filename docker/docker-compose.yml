@@ -1,0 +1,26 @@
+version: "3.8"
+services: 
+  catalog-service:
+    depends_on: 
+      - catalog-postgres
+    image: catalog-service:0.0.1-SNAPSHOT
+    container_name: catalog-service
+    ports:
+      - "127.0.0.1:50101:50101"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://catalog-postgres:5432/polardb_catalog
+      - SPRING_PROFILES_ACTIVE=prod,testdata
+      - BPL_DEBUG_ENABLED=true
+      - BPL_DEBUG_PORT=50102
+  catalog-postgres:
+    image: postgres:latest
+    container_name: catalog-postgres
+    ports:
+      - "127.0.0.1:5590:5432"
+    volumes:
+      - /private/storage/postgres-data/catalogservice/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=polardb_catalog
+      - POSTGRES_USER=catalogservice
+      - POSTGRES_PASSWORD=
+      - POSTGRES_HOST_AUTH_METHOD=true
