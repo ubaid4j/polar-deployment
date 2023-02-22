@@ -1,8 +1,14 @@
 version: "3.8"
-services: 
+services:
+  config-service:
+    image: config-service:0.0.1-SNAPSHOT
+    container_name: config-service
+    ports:
+      - "127.0.0.1:50000:50000"
   catalog-service:
     depends_on: 
       - catalog-postgres
+      - config-service
     image: catalog-service:0.0.1-SNAPSHOT
     container_name: catalog-service
     ports:
@@ -25,8 +31,3 @@ services:
       - POSTGRES_USER=catalogservice
       - POSTGRES_PASSWORD=
       - POSTGRES_HOST_AUTH_METHOD=true
-  config-service:
-    image: config-service:0.0.1-SNAPSHOT
-    container_name: config-service
-    ports:
-      - "127.0.0.1:50000:50000"
