@@ -9,6 +9,7 @@ services:
       - "127.0.0.1:50101:50101"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://catalog-postgres:5432/polardb_catalog
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:50000
       - SPRING_PROFILES_ACTIVE=prod,testdata
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
@@ -24,3 +25,8 @@ services:
       - POSTGRES_USER=catalogservice
       - POSTGRES_PASSWORD=
       - POSTGRES_HOST_AUTH_METHOD=true
+  config-service:
+    image: config-service:0.0.1-SNAPSHOT
+    container_name: config-service
+    ports:
+      - "127.0.0.1:50000:50000"
