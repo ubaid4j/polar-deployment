@@ -7,7 +7,7 @@ services:
       - "127.0.0.1:50000:50000"
   catalog-service:
     depends_on: 
-      - catalog-postgres
+      - polar-postgres
       - config-service
     image: catalog-service:0.0.1-SNAPSHOT
     container_name: catalog-service
@@ -19,15 +19,15 @@ services:
       - SPRING_PROFILES_ACTIVE=prod,testdata
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
-  catalog-postgres:
+  polar-postgres:
     image: postgres:latest
-    container_name: catalog-postgres
+    container_name: polar-postgres
     ports:
       - "127.0.0.1:5590:5432"
     volumes:
+      - ./postgres/init.sql/:/docker-entrypoint-initdb.d/init.sql
       - /private/storage/postgres-data/catalogservice/:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=polardb_catalog
-      - POSTGRES_USER=catalogservice
+      - POSTGRES_USER=polardb
       - POSTGRES_PASSWORD=
-      - POSTGRES_HOST_AUTH_METHOD=true
+      - POSTGRES_HOST_AUTH_METHOD=trust
