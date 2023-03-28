@@ -26,7 +26,7 @@ services:
       - "127.0.0.1:5590:5432"
     volumes:
       - ./postgres/init.sql/:/docker-entrypoint-initdb.d/init.sql
-      - /private/storage/postgres-data/catalogservice/:/var/lib/postgresql/data/
+      - /private/storage/postgres-data/polar/:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=polardb
       - POSTGRES_PASSWORD=
