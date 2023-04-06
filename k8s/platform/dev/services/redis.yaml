@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polar-redis
+  labels:
+    db: polar-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      db: polar-redis
+  template:
+    metadata:
+      name: polar-redis
+      labels:
+        db: polar-redis
+    spec:
+      containers:
+        - name: polar-redis
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 100m
+              memory: 50Mi
+            limits:
+              cpu: 200m
+              memory: 100Mi
+      restartPolicy: Always
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: polar-redis
+  labels:
+    db: polar-redis
+spec:
+  type: ClusterIP
+  selector:
+    db: polar-redis
+  ports:
+    - port: 6379
+      protocol: TCP
+      targetPort: 6379
