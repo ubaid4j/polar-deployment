@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: polar-postgres
+  name: order-postgres
   labels:
-    db: polar-postgres
+    db: order-postgres
 spec:
   selector:
     matchLabels:
-      db: polar-postgres
+      db: order-postgres
   template:
     metadata:
       labels:
-        db: polar-postgres
+        db: order-postgres
     spec:
       containers:
-        - name: polar-postgres
+        - name: order-postgres
           image: postgres:latest
           env:
             - name: POSTGRES_USER
-              value: user
+              value: order
             - name: POSTGRES_PASSWORD
-              value: password
+              value: order
             - name: POSTGRES_DB
-              value: polardb_catalog
+              value: polardb_order
           resources:
             requests:
               cpu: 100m
@@ -36,13 +36,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: polar-postgres
+  name: order-postgres
   labels:
-    db: polar-postgres
+    db: order-postgres
 spec:
   type: ClusterIP
   selector:
-    db: polar-postgres
+    db: order-postgres
   ports:
     - protocol: TCP
       port: 5432
