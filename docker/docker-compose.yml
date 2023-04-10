@@ -6,7 +6,7 @@ services:
     ports:
       - "127.0.0.1:50000:50000"
   catalog-service:
-    depends_on: 
+    depends_on:
       - polar-postgres
       - config-service
     image: catalog-service:0.0.1-SNAPSHOT
@@ -38,3 +38,11 @@ services:
       - "127.0.0.1:50988:6379"
     volumes:
       - /private/storage/redis/polar-redis/:/data
+  polar-rabbitmq:
+    image: rabbitmq:3.11.13-management
+    container_name: polar-rabbitmq
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
