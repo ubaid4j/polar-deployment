@@ -46,3 +46,12 @@ services:
       - "127.0.0.1:15672:15672"
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+  polar-keycloak:
+    image: quay.io/keycloak/keycloak:21.0.2-0
+    container_name: polar-keycloak
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=user
+      - KEYCLOAK_ADMIN_PASSWORD=password
+    ports:
+      - "127.0.0.1:50907:8080"
