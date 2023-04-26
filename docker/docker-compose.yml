@@ -63,4 +63,4 @@ services:
     ports:
       - "127.0.0.1:9004:9004"
     environment:
-      - PORT=9004
+      - PORT=50090
