@@ -58,7 +58,7 @@ services:
     ports:
       - "127.0.0.1:50907:8080"
   polar-ui:
-    image: "ghcr.io/polarbookshop/polar-ui:v1"
+    image: "polar-ui"
     container_name: "polar-ui"
     ports:
       - "127.0.0.1:9004:9004"
