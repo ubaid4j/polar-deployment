@@ -9,44 +9,52 @@ services:
     depends_on:
       - polar-postgres
       - config-service
-    image: ghcr.io/ubaid4j/edge-service:0.0.1-SNAPSHOT
+    image: ghcr.io/ubaid4j/edge-service:0.0.2-SNAPSHOT
     container_name: edge-service
     ports:
       - "127.0.0.1:50090:50090"
     environment:
       - SPRING_CLOUD_CONFIG_URI=http://config-service:50000
       - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=false
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=1
       - SPRING_DATA_REDIS_HOST=polar-redis
-      - SPRING_DATA_REDIS_PORT=50988
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_POLAR_BOOK_SHOP_ISSUER_URI=http://polar-keycloak/realms/PolarBookshop
-      - CATALOG_SERVICE_URL=http://catalog-service
-      - ORDER_SERVICE_URL=http://order-service
-      - SPA_URL=http://polar-ui
+      - SPRING_DATA_REDIS_PORT=6379
+      - AUTH_SERVER_URL=http://polar-keycloak:50907
+      - CATALOG_SERVICE_URL=http://catalog-service:50101
+      - ORDER_SERVICE_URL=http://order-service:50201
+      - SPA_URL=http://polar-ui:9004
   catalog-service:
     depends_on:
       - polar-postgres
       - config-service
-    image: ghcr.io/ubaid4j/catalog-service:0.0.1-SNAPSHOT
+      - polar-redis
+      - polar-keycloak
+    image: ghcr.io/ubaid4j/catalog-service:0.0.2-SNAPSHOT
     container_name: catalog-service
     ports:
       - "127.0.0.1:50101:50101"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://catalog-postgres:5432/polardb_catalog
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_catalog
       - SPRING_CLOUD_CONFIG_URI=http://config-service:50000
       - SPRING_PROFILES_ACTIVE=prod,testdata
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=false
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
   order-service:
     depends_on:
       - polar-postgres
       - config-service
+      - polar-keycloak
     image: ghcr.io/ubaid4j/order-service:0.0.1-SNAPSHOT
     container_name: order-service
     ports:
       - "127.0.0.1:50201:50201"
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://polar-postgres:5432/polardb_order
+      - SPRING_FLYWAY_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
       - SPRING_CLOUD_CONFIG_URI=http://config-service:50000
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=false
       - SPRING_PROFILES_ACTIVE=prod
   dispatcher-service:
     image: ghcr.io/ubaid4j/dispatcher-service:0.0.1-SNAPSHOT
@@ -56,6 +64,8 @@ services:
     environment:
       - SPRING_RABBITMQ_HOST=polar-rabbitmq
       - SPRING_RABBITMQ_PORT=5672
+    depends_on:
+      - polar-keycloak
   polar-postgres:
     image: postgres:latest
     container_name: polar-postgres
@@ -86,14 +96,15 @@ services:
   polar-keycloak:
     image: quay.io/keycloak/keycloak:21.0.2-0
     container_name: polar-keycloak
-    command: start-dev --import-realm
+    command: start-dev --http-port 50907 --import-realm
     volumes:
       - ./keycloak:/opt/keycloak/data/import
     environment:
       - KEYCLOAK_ADMIN=user
       - KEYCLOAK_ADMIN_PASSWORD=password
+      - KC_HTTP_PORT=50907
     ports:
-      - "127.0.0.1:50907:8080"
+      - "127.0.0.1:50907:50907"
   polar-ui:
     image: "polar-ui"
     container_name: "polar-ui"
