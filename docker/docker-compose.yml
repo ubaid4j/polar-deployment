@@ -24,6 +24,7 @@ services:
       - CATALOG_SERVICE_URL=http://catalog-service:50101
       - ORDER_SERVICE_URL=http://order-service:50201
       - SPA_URL=http://polar-ui:9004
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=TRACE
   catalog-service:
     depends_on:
       - polar-postgres
@@ -106,7 +107,7 @@ services:
     ports:
       - "127.0.0.1:50907:50907"
   polar-ui:
-    image: "polar-ui"
+    image: ghcr.io/ubaid4j/polar-ui:0.0.3-snapshot
     container_name: "polar-ui"
     ports:
       - "127.0.0.1:9004:9004"
