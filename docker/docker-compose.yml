@@ -4,17 +4,17 @@ services:
     image: ghcr.io/ubaid4j/config-service:0.0.1-SNAPSHOT
     container_name: config-service
     ports:
-      - "127.0.0.1:50000:50000"
+      - "127.0.0.1:50100:50100"
   edge-service:
     depends_on:
-      - polar-postgres
-      - config-service
+      polar-keycloak:
+        condition: service_healthy
     image: ghcr.io/ubaid4j/edge-service:0.0.2-SNAPSHOT
     container_name: edge-service
     ports:
       - "127.0.0.1:50090:50090"
     environment:
-      - SPRING_CLOUD_CONFIG_URI=http://config-service:50000
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:50100
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_FAIL_FAST=false
       - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=1
@@ -57,6 +57,8 @@ services:
       - SPRING_CLOUD_CONFIG_URI=http://config-service:50000
       - SPRING_CLOUD_CONFIG_FAIL_FAST=false
       - SPRING_PROFILES_ACTIVE=prod
+      - POLAR_CATALOG_SERVICE_URI=http://catalog-service:50101
+      - LOGGING_LEVEL_ROOT=debug
   dispatcher-service:
     image: ghcr.io/ubaid4j/dispatcher-service:0.0.1-SNAPSHOT
     container_name: dispatcher-service
@@ -99,13 +101,20 @@ services:
     container_name: polar-keycloak
     command: start-dev --http-port 50907 --import-realm
     volumes:
-      - ./keycloak:/opt/keycloak/data/import
+      - ./keycloak/data:/opt/keycloak/data/import
+      - ./keycloak/health-check.sh:/opt/keycloak/health-check.sh
     environment:
       - KEYCLOAK_ADMIN=user
       - KEYCLOAK_ADMIN_PASSWORD=password
       - KC_HTTP_PORT=50907
+      - KC_HEALTH_ENABLED=true
     ports:
       - "127.0.0.1:50907:50907"
+    healthcheck:
+      test: "bash /opt/keycloak/health-check.sh"
+      interval: 5s
+      timeout: 10s
+      retries: 12
   polar-ui:
     image: ghcr.io/ubaid4j/polar-ui:0.0.3-snapshot
     container_name: "polar-ui"
