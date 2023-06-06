@@ -59,6 +59,7 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - POLAR_CATALOG_SERVICE_URI=http://catalog-service:50101
       - LOGGING_LEVEL_ROOT=debug
+      - DEBUG=true
   dispatcher-service:
     image: ghcr.io/ubaid4j/dispatcher-service:0.0.1-SNAPSHOT
     container_name: dispatcher-service
