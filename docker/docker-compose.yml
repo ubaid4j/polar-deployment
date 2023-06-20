@@ -37,7 +37,7 @@ services:
       - "127.0.0.1:50101:50101"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_catalog
-      - SPRING_CLOUD_CONFIG_URI=http://config-service:50000
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:50100
       - SPRING_PROFILES_ACTIVE=prod,testdata
       - SPRING_CLOUD_CONFIG_FAIL_FAST=false
       - BPL_DEBUG_ENABLED=true
@@ -54,12 +54,16 @@ services:
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://polar-postgres:5432/polardb_order
       - SPRING_FLYWAY_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
-      - SPRING_CLOUD_CONFIG_URI=http://config-service:50000
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:50100
+      - POLAR_CATALOG_SERVICE_URI=http://catalog-service:50101
+      - SPRING_RABBITMQ_HOST=polar-rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
       - SPRING_CLOUD_CONFIG_FAIL_FAST=false
       - SPRING_PROFILES_ACTIVE=prod
-      - POLAR_CATALOG_SERVICE_URI=http://catalog-service:50101
-      - LOGGING_LEVEL_ROOT=debug
+      - LOGGING_LEVEL_ROOT=INFO
       - DEBUG=true
+      - BPL_DEBUG_ENABLED=true
+      - BPL_DEBUG_PORT=50101
   dispatcher-service:
     image: ghcr.io/ubaid4j/dispatcher-service:0.0.1-SNAPSHOT
     container_name: dispatcher-service
