@@ -47,7 +47,7 @@ services:
       - polar-postgres
       - config-service
       - polar-keycloak
-    image: ghcr.io/ubaid4j/order-service:0.0.1-SNAPSHOT
+    image: ghcr.io/ubaid4j/order-service:0.0.4-snapshot
     container_name: order-service
     ports:
       - "127.0.0.1:50201:50201"
