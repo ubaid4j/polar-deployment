@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polar-keycloak
+  labels:
+    app: polar-keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: polar-keycloak
+  template:
+    metadata:
+      labels:
+        app: polar-keycloak
+    spec:
+      containers:
+        -   name: polar-keycloak
+            image: quay.io/keycloak/keycloak:21.0.2-0
+            command: [start-dev --http-port 80 --import-realm]
+            env:
+              -   name: KEYCLOAK_ADMIN
+                  value: user
+              -   name: KEYCLOAK_ADMIN_PASSWORD
+                  value: password
+              -   name: KC_HTTP_PORT
+                  value: '80'
+              -   name: KC_HEALTH_ENABLED
+                  value: 'true'
+            ports:
+              -   containerPort: 80
+            volumeMounts:
+              - mountPath: /opt/keycloak/data/import
+                name: realm-data
+
+---
+
+
+
