@@ -31,9 +31,34 @@ spec:
               -   containerPort: 80
             volumeMounts:
               - mountPath: /opt/keycloak/data/import
-                name: realm-data
+                name: polar-keycloak
+      volumes:
+        - name: polar-keycloak
+          persistentVolumeClaim:
+            claimName: polar-keycloak
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: polar-keycloak
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/docker/realm-config.json
 
 ---
 
-
-
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: polar-keycloak
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
