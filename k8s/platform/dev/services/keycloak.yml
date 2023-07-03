@@ -17,7 +17,7 @@ spec:
       containers:
         -   name: polar-keycloak
             image: quay.io/keycloak/keycloak:21.0.2-0
-            command: [start-dev --http-port 80 --import-realm]
+            args: ["start-dev --import-realm"]
             env:
               -   name: KEYCLOAK_ADMIN
                   value: user
@@ -32,6 +32,10 @@ spec:
             volumeMounts:
               - mountPath: /opt/keycloak/data/import
                 name: polar-keycloak
+            readinessProbe:
+              httpGet:
+                path: /realms/master
+                port: 80
       volumes:
         - name: polar-keycloak
           persistentVolumeClaim:
@@ -62,3 +66,18 @@ spec:
   resources:
     requests:
       storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polar-keycloak
+  labels:
+    app: polar-keycloak
+spec:
+  type: ClusterIP
+  selector:
+    app: polar-keycloak
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
