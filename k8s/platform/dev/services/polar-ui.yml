@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polar-ui
+  labels:
+    app: polar-ui
+spec:
+  selector:
+    matchLabels:
+      app: polar-ui
+  template:
+    metadata:
+      labels:
+        app: polar-ui
+    spec:
+      containers:
+        - name: polar-ui
+          image: ghcr.io/ubaid4j/polar-ui:0.0.3-snapshot
+          env:
+            - name: PORT
+              value: "80"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 60Mi
+            limits:
+              cpu: 200m
+              memory: 120Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: polar-ui
+  labels:
+    app: polar-ui
+spec:
+  type: ClusterIP
+  selector:
+    app: polar-ui
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

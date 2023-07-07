@@ -81,3 +81,22 @@ spec:
     - port: 80
       protocol: TCP
       targetPort: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: polar-keycloak-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "polar-keycloak"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: polar-keycloak
+                port:
+                  number: 80
