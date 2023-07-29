@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   config-service:
-    image: ghcr.io/ubaid4j/config-service:0.0.1-SNAPSHOT
+    image: ghcr.io/ubaid4j/config-service:0.0.2-SNAPSHOT
     container_name: config-service
     ports:
       - "127.0.0.1:50100:50100"
@@ -9,7 +9,7 @@ services:
     depends_on:
       polar-keycloak:
         condition: service_healthy
-    image: ghcr.io/ubaid4j/edge-service:0.0.2-SNAPSHOT
+    image: ghcr.io/ubaid4j/edge-service:0.0.3-SNAPSHOT
     container_name: edge-service
     ports:
       - "127.0.0.1:50090:50090"
@@ -31,7 +31,7 @@ services:
       - config-service
       - polar-redis
       - polar-keycloak
-    image: ghcr.io/ubaid4j/catalog-service:0.0.2-SNAPSHOT
+    image: ghcr.io/ubaid4j/catalog-service:0.0.3-SNAPSHOT
     container_name: catalog-service
     ports:
       - "127.0.0.1:50101:50101"
@@ -40,6 +40,7 @@ services:
       - SPRING_CLOUD_CONFIG_URI=http://config-service:50100
       - SPRING_PROFILES_ACTIVE=prod,testdata
       - SPRING_CLOUD_CONFIG_FAIL_FAST=false
+      - AUTH_SERVER_URL=http://polar-keycloak:50907
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
   order-service:
@@ -47,7 +48,7 @@ services:
       - polar-postgres
       - config-service
       - polar-keycloak
-    image: ghcr.io/ubaid4j/order-service:0.0.4-snapshot
+    image: ghcr.io/ubaid4j/order-service:0.0.5-snapshot
     container_name: order-service
     ports:
       - "127.0.0.1:50201:50201"
@@ -56,6 +57,7 @@ services:
       - SPRING_FLYWAY_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
       - SPRING_CLOUD_CONFIG_URI=http://config-service:50100
       - POLAR_CATALOG_SERVICE_URI=http://catalog-service:50101
+      - AUTH_SERVER_URL=http://polar-keycloak:50907
       - SPRING_RABBITMQ_HOST=polar-rabbitmq
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_CLOUD_CONFIG_FAIL_FAST=false
@@ -65,7 +67,7 @@ services:
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50101
   dispatcher-service:
-    image: ghcr.io/ubaid4j/dispatcher-service:0.0.1-SNAPSHOT
+    image: ghcr.io/ubaid4j/dispatcher-service:0.0.2-SNAPSHOT
     container_name: dispatcher-service
     ports:
       - "127.0.0.1:50301:50301"
