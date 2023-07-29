@@ -7,7 +7,7 @@ services:
       - "127.0.0.1:50100:50100"
   edge-service:
     depends_on:
-      polar-keycloak:
+      polar-keycloak-docker:
         condition: service_healthy
     image: ghcr.io/ubaid4j/edge-service:0.0.3-SNAPSHOT
     container_name: edge-service
@@ -20,7 +20,7 @@ services:
       - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=1
       - SPRING_DATA_REDIS_HOST=polar-redis
       - SPRING_DATA_REDIS_PORT=6379
-      - AUTH_SERVER_URL=http://polar-keycloak:50907
+      - AUTH_SERVER_URL=http://polar-keycloak-docker:50907
       - CATALOG_SERVICE_URL=http://catalog-service:50101
       - ORDER_SERVICE_URL=http://order-service:50201
       - SPA_URL=http://polar-ui:9004
@@ -30,7 +30,7 @@ services:
       - polar-postgres
       - config-service
       - polar-redis
-      - polar-keycloak
+      - polar-keycloak-docker
     image: ghcr.io/ubaid4j/catalog-service:0.0.3-SNAPSHOT
     container_name: catalog-service
     ports:
@@ -40,14 +40,14 @@ services:
       - SPRING_CLOUD_CONFIG_URI=http://config-service:50100
       - SPRING_PROFILES_ACTIVE=prod,testdata
       - SPRING_CLOUD_CONFIG_FAIL_FAST=false
-      - AUTH_SERVER_URL=http://polar-keycloak:50907
+      - AUTH_SERVER_URL=http://polar-keycloak-docker:50907
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
   order-service:
     depends_on:
       - polar-postgres
       - config-service
-      - polar-keycloak
+      - polar-keycloak-docker
     image: ghcr.io/ubaid4j/order-service:0.0.5-snapshot
     container_name: order-service
     ports:
@@ -57,7 +57,7 @@ services:
       - SPRING_FLYWAY_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
       - SPRING_CLOUD_CONFIG_URI=http://config-service:50100
       - POLAR_CATALOG_SERVICE_URI=http://catalog-service:50101
-      - AUTH_SERVER_URL=http://polar-keycloak:50907
+      - AUTH_SERVER_URL=http://polar-keycloak-docker:50907
       - SPRING_RABBITMQ_HOST=polar-rabbitmq
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_CLOUD_CONFIG_FAIL_FAST=false
@@ -75,7 +75,7 @@ services:
       - SPRING_RABBITMQ_HOST=polar-rabbitmq
       - SPRING_RABBITMQ_PORT=5672
     depends_on:
-      - polar-keycloak
+      - polar-keycloak-docker
   polar-postgres:
     image: postgres:latest
     container_name: polar-postgres
@@ -103,9 +103,9 @@ services:
       - "127.0.0.1:15672:15672"
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-  polar-keycloak:
+  polar-keycloak-docker:
     image: quay.io/keycloak/keycloak:21.0.2-0
-    container_name: polar-keycloak
+    container_name: polar-keycloak-docker
     command: start-dev --http-port 50907 --import-realm
     volumes:
       - ./keycloak/data:/opt/keycloak/data/import
