@@ -104,7 +104,7 @@ services:
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
   polar-keycloak-docker:
-    image: quay.io/keycloak/keycloak:21.0.2-0
+    image: quay.io/keycloak/keycloak:22.0.1-0
     container_name: polar-keycloak-docker
     command: start-dev --http-port 50907 --import-realm
     volumes:
