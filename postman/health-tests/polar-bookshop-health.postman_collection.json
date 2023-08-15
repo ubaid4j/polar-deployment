@@ -1,0 +1,300 @@
+{
+	"info": {
+		"_postman_id": "72957f66-9ba1-41c3-a976-0bb1a0c9e0c4",
+		"name": "Polar Book Shop Health",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4065658"
+	},
+	"item": [
+		{
+			"name": "order-service",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the status is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.status).to.exist.and.to.be.a('string');",
+							"    pm.expect(responseData.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the readinessState is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.readinessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.readinessState.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the liveness state is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.livenessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.livenessState.status).to.equal('UP');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:50201/management/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "50201",
+					"path": [
+						"management",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dispatcher-service",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the status is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.status).to.exist.and.to.be.a('string');",
+							"    pm.expect(responseData.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the readinessState is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.readinessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.readinessState.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the liveness state is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.livenessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.livenessState.status).to.equal('UP');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:50301/management/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "50301",
+					"path": [
+						"management",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edge-service",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the status is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.status).to.exist.and.to.be.a('string');",
+							"    pm.expect(responseData.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the readinessState is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.readinessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.readinessState.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the liveness state is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.livenessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.livenessState.status).to.equal('UP');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:50090/management/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "50090",
+					"path": [
+						"management",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "catalog-service",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the status is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.status).to.exist.and.to.be.a('string');",
+							"    pm.expect(responseData.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the readinessState is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.readinessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.readinessState.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the liveness state is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.livenessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.livenessState.status).to.equal('UP');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:50101/management/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "50101",
+					"path": [
+						"management",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "config-service",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the status is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.status).to.exist.and.to.be.a('string');",
+							"    pm.expect(responseData.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the readinessState is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.readinessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.readinessState.status).to.equal('UP');",
+							"});",
+							"",
+							"pm.test(\"Validate the liveness state is UP\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.components.livenessState).to.exist.and.to.be.a('object');",
+							"    pm.expect(responseData.components.livenessState.status).to.equal('UP');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:50100/management/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "50100",
+					"path": [
+						"management",
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
