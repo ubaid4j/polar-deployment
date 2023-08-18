@@ -159,9 +159,11 @@ services:
   grafana:
     image: grafana/grafana:10.0.3
     container_name: grafana
-    depends_on: 
-      - loki
-      - prometheus
+    depends_on:
+      prometheus:
+        condition: service_healthy
+      loki:
+        condition: service_healthy
     ports:
       - "127.0.0.1:55501:3000"
     environment:
@@ -170,6 +172,9 @@ services:
     volumes:
       - ./observability/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./observability/grafana/grafana.ini:/etc/grafana/grafana.ini
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
+      interval: 20s
   loki:
     image: grafana/loki:2.8.3
     container_name: loki
@@ -177,7 +182,12 @@ services:
       - fluent-bit
     ports:
       - "127.0.0.1:55502:3100"
-  fluent-bit: 
+    healthcheck:
+      test: [ "CMD", "wget", "-O", "/dev/null", "http://localhost:3100/ready" ]
+      start_period: 30s
+      interval: 5s
+#  TODO check if we can check health for fluent-bit
+  fluent-bit:
     image: grafana/fluent-bit-plugin-loki:latest
     container_name: fluent-bit
     ports:
@@ -193,6 +203,6 @@ services:
       - "127.0.0.1:55590:9090"
     volumes:
       - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    
-    
-    
+    healthcheck:
+      test: ["CMD", "wget", "-O", "/dev/null", "http://localhost:9090/-/ready"]
+      interval: 5s
