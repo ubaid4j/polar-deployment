@@ -5,6 +5,9 @@ services:
     container_name: config-service
     ports:
       - "127.0.0.1:50100:50100"
+    environment:
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_WEB: INFO
     depends_on: 
       - fluent-bit
     logging:
@@ -39,11 +42,16 @@ services:
         fluentd-address: 127.0.0.1:55503
   catalog-service:
     depends_on:
-      - fluent-bit
-      - polar-postgres
-      - config-service
-      - polar-redis
-      - polar-keycloak-docker
+      polar-keycloak-docker:
+        condition: service_healthy
+      polar-postgres:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      polar-redis:
+        condition: service_healthy
+      fluent-bit:
+        condition: service_started
     image: ghcr.io/ubaid4j/catalog-service:0.0.3-SNAPSHOT
     container_name: catalog-service
     ports:
@@ -122,6 +130,10 @@ services:
       - "127.0.0.1:50988:6379"
     volumes:
       - /private/storage/redis/polar-redis/:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      start_period: 20s
+      interval: 5s
   polar-rabbitmq:
     image: rabbitmq:3.11.13-management
     container_name: polar-rabbitmq
@@ -130,6 +142,9 @@ services:
       - "127.0.0.1:15672:15672"
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
   polar-keycloak-docker:
     image: quay.io/keycloak/keycloak:22.0.1-0
     container_name: polar-keycloak-docker
@@ -150,12 +165,16 @@ services:
       timeout: 10s
       retries: 12
   polar-ui:
-    image: ghcr.io/ubaid4j/polar-ui:0.0.3-snapshot
+    image: ghcr.io/ubaid4j/polar-ui:0.0.4-snapshot
     container_name: "polar-ui"
     ports:
       - "127.0.0.1:9004:9004"
     environment:
       - PORT=9004
+    volumes:
+      - ./polar-ui/health-check.sh:/health-check.sh
+    healthcheck:
+      test: "bash /health-check.sh"
   grafana:
     image: grafana/grafana:10.0.3
     container_name: grafana
