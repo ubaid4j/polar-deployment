@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   config-service:
-    image: ghcr.io/ubaid4j/config-service:0.0.2-SNAPSHOT
+    image: ghcr.io/ubaid4j/config-service:0.0.3-SNAPSHOT
     container_name: config-service
     ports:
       - "127.0.0.1:50100:50100"
