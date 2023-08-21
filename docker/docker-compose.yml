@@ -10,6 +10,10 @@ services:
       LOGGING_LEVEL_WEB: INFO
     depends_on: 
       - fluent-bit
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:50100/management/health"]
+      interval: 1m
+      timeout: 30s
     logging:
       driver: fluentd
       options: 
