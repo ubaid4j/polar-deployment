@@ -24,7 +24,7 @@ services:
         condition: service_healthy
       fluent-bit:
         condition: service_started
-    image: ghcr.io/ubaid4j/edge-service:0.0.3-SNAPSHOT
+    image: ghcr.io/ubaid4j/edge-service:0.0.4-SNAPSHOT
     container_name: edge-service
     ports:
       - "127.0.0.1:50090:50090"
@@ -40,6 +40,8 @@ services:
       - ORDER_SERVICE_URL=http://order-service:50201
       - SPA_URL=http://polar-ui:9004
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=TRACE
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:50090/management/health"]
     logging:
       driver: fluentd
       options: 
@@ -127,6 +129,9 @@ services:
       - POSTGRES_USER=polardb
       - POSTGRES_PASSWORD=
       - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
   polar-redis:
     image: "redis:latest"
     container_name: "polar-redis"
