@@ -11,9 +11,10 @@ services:
     depends_on: 
       - fluent-bit
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:50100/management/health"]
-      interval: 1m
-      timeout: 30s
+      test: "bash /health-check.sh"
+      start_period: 2m
+    volumes:
+      - ./config-service/health-check.sh:/health-check.sh
     logging:
       driver: fluentd
       options: 
@@ -41,7 +42,10 @@ services:
       - SPA_URL=http://polar-ui:9004
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=TRACE
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:50090/management/health"]
+      test: "bash /health-check.sh"
+      start_period: 2m
+    volumes:
+      - ./edge-service/health-check.sh:/health-check.sh
     logging:
       driver: fluentd
       options: 
@@ -70,16 +74,25 @@ services:
       - AUTH_SERVER_URL=http://polar-keycloak-docker:50907
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
+    healthcheck:
+      test: "bash /health-check.sh"
+      start_period: 2m
+    volumes:
+      - ./catalog-service/health-check.sh:/health-check.sh
     logging:
       driver: fluentd
       options: 
         fluentd-address: 127.0.0.1:55503
   order-service:
     depends_on:
-      - polar-postgres
-      - config-service
-      - polar-keycloak-docker
-      - fluent-bit
+      polar-postgres:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      polar-keycloak-docker:
+        condition: service_healthy
+      fluent-bit:
+        condition: service_started
     image: ghcr.io/ubaid4j/order-service:0.0.5-snapshot
     container_name: order-service
     ports:
@@ -98,6 +111,11 @@ services:
       - DEBUG=true
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50101
+    healthcheck:
+      test: "bash /health-check.sh"
+      start_period: 2m
+    volumes:
+      - ./order-service/health-check.sh:/health-check.sh
     logging:
       driver: fluentd
       options: 
@@ -111,8 +129,15 @@ services:
       - SPRING_RABBITMQ_HOST=polar-rabbitmq
       - SPRING_RABBITMQ_PORT=5672
     depends_on:
-      - polar-keycloak-docker
-      - fluent-bit
+      polar-keycloak-docker:
+        condition: service_healthy
+      fluent-bit:
+        condition: service_started
+    healthcheck:
+      test: "bash /health-check.sh"
+      start_period: 2m
+    volumes:
+      - ./dispatcher-service/health-check.sh:/health-check.sh
     logging:
       driver: fluentd
       options: 
@@ -131,7 +156,7 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
+      start_period: 2m
   polar-redis:
     image: "redis:latest"
     container_name: "polar-redis"
@@ -141,8 +166,7 @@ services:
       - /private/storage/redis/polar-redis/:/data
     healthcheck:
       test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      start_period: 20s
-      interval: 5s
+      start_period: 2m
   polar-rabbitmq:
     image: rabbitmq:3.11.13-management
     container_name: polar-rabbitmq
@@ -153,7 +177,7 @@ services:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 5s
+      start_period: 2m
   polar-keycloak-docker:
     image: quay.io/keycloak/keycloak:22.0.1-0
     container_name: polar-keycloak-docker
@@ -170,9 +194,7 @@ services:
       - "127.0.0.1:50907:50907"
     healthcheck:
       test: "bash /opt/keycloak/health-check.sh"
-      interval: 5s
-      timeout: 10s
-      retries: 12
+      start_period: 2m
   polar-ui:
     image: ghcr.io/ubaid4j/polar-ui:0.0.4-snapshot
     container_name: "polar-ui"
@@ -202,7 +224,7 @@ services:
       - ./observability/grafana/grafana.ini:/etc/grafana/grafana.ini
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
-      interval: 20s
+      start_period: 2m
   loki:
     image: grafana/loki:2.8.3
     container_name: loki
@@ -212,8 +234,7 @@ services:
       - "127.0.0.1:55502:3100"
     healthcheck:
       test: [ "CMD", "wget", "-O", "/dev/null", "http://localhost:3100/ready" ]
-      start_period: 30s
-      interval: 5s
+      start_period: 2m
 #  TODO check if we can check health for fluent-bit
   fluent-bit:
     image: grafana/fluent-bit-plugin-loki:latest
@@ -233,4 +254,4 @@ services:
       - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     healthcheck:
       test: ["CMD", "wget", "-O", "/dev/null", "http://localhost:9090/-/ready"]
-      interval: 5s
+      start_period: 2m
