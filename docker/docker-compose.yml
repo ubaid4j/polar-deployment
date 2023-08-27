@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   config-service:
-    image: ghcr.io/ubaid4j/config-service:0.0.3-SNAPSHOT
+    image: ghcr.io/ubaid4j/config-service:0.0.3-snapshot
     container_name: config-service
     ports:
       - "127.0.0.1:50100:50100"
@@ -25,7 +25,7 @@ services:
         condition: service_healthy
       fluent-bit:
         condition: service_started
-    image: ghcr.io/ubaid4j/edge-service:0.0.4-SNAPSHOT
+    image: ghcr.io/ubaid4j/edge-service:0.0.4-snapshot
     container_name: edge-service
     ports:
       - "127.0.0.1:50090:50090"
@@ -43,7 +43,7 @@ services:
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=TRACE
     healthcheck:
       test: "bash /health-check.sh"
-      start_period: 2m
+      start_period: 30s
     volumes:
       - ./edge-service/health-check.sh:/health-check.sh
     logging:
@@ -62,7 +62,7 @@ services:
         condition: service_healthy
       fluent-bit:
         condition: service_started
-    image: ghcr.io/ubaid4j/catalog-service:0.0.3-SNAPSHOT
+    image: ghcr.io/ubaid4j/catalog-service:0.0.4-snapshot
     container_name: catalog-service
     ports:
       - "127.0.0.1:50101:50101"
@@ -75,10 +75,11 @@ services:
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
     healthcheck:
-      test: "bash /health-check.sh"
+      test: "/health-check.sh"
       start_period: 2m
     volumes:
       - ./catalog-service/health-check.sh:/health-check.sh
+      - ./catalog-service/config:/workspace/config
     logging:
       driver: fluentd
       options: 
@@ -121,7 +122,7 @@ services:
       options: 
         fluentd-address: 127.0.0.1:55503
   dispatcher-service:
-    image: ghcr.io/ubaid4j/dispatcher-service:0.0.2-SNAPSHOT
+    image: ghcr.io/ubaid4j/dispatcher-service:0.0.2-snapshot
     container_name: dispatcher-service
     ports:
       - "127.0.0.1:50301:50301"
