@@ -75,10 +75,9 @@ services:
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
     healthcheck:
-      test: "/health-check.sh"
-      start_period: 2m
+      test: ["CMD", "curl", "-f", "http://localhost:50101/management/health"]
+      start_period: 45s
     volumes:
-      - ./catalog-service/health-check.sh:/health-check.sh
       - ./catalog-service/config:/workspace/config
     logging:
       driver: fluentd
