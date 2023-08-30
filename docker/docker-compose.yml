@@ -237,14 +237,18 @@ services:
       start_period: 2m
 #  TODO check if we can check health for fluent-bit
   fluent-bit:
-    image: grafana/fluent-bit-plugin-loki:latest
+    build:
+      context: observability/fluent-bit
+      dockerfile: Dockerfile
     container_name: fluent-bit
     ports:
-      - "127.0.0.1:55503:24224"
+      - "127.0.0.1:55503:2020"
     environment:
       - LOKI_URL=http://loki:3100/loki/api/v1/push
     volumes:
       - ./observability/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    healthcheck:
+      test: ["CMD", "wget", "-O", "/dev/null", "http://localhost:2020/api/v1/health"]
   prometheus:
     image: prom/prometheus
     container_name: prometheus
