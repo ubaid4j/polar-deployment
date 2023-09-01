@@ -6,13 +6,15 @@ services:
     ports:
       - "127.0.0.1:50100:50100"
     environment:
-      LOGGING_LEVEL_ROOT: INFO
-      LOGGING_LEVEL_WEB: INFO
+      LOGGING_LEVEL_ROOT: DEBUG
+      LOGGING_LEVEL_WEB: DEBUG
     depends_on: 
-      - fluent-bit
+      fluent-bit:
+        condition: service_healthy
     healthcheck:
       test: "bash /health-check.sh"
-      start_period: 2m
+      start_period: 1m
+      interval: 1m
     volumes:
       - ./config-service/health-check.sh:/health-check.sh
     logging:
@@ -24,7 +26,7 @@ services:
       polar-keycloak-docker:
         condition: service_healthy
       fluent-bit:
-        condition: service_started
+        condition: service_healthy
     image: ghcr.io/ubaid4j/edge-service:0.0.4-snapshot
     container_name: edge-service
     ports:
@@ -61,7 +63,7 @@ services:
       polar-redis:
         condition: service_healthy
       fluent-bit:
-        condition: service_started
+        condition: service_healthy
     image: ghcr.io/ubaid4j/catalog-service:0.0.4-snapshot
     container_name: catalog-service
     ports:
@@ -92,7 +94,7 @@ services:
       polar-keycloak-docker:
         condition: service_healthy
       fluent-bit:
-        condition: service_started
+        condition: service_healthy
     image: ghcr.io/ubaid4j/order-service:0.0.5-snapshot
     container_name: order-service
     ports:
@@ -132,7 +134,7 @@ services:
       polar-keycloak-docker:
         condition: service_healthy
       fluent-bit:
-        condition: service_started
+        condition: service_healthy
     healthcheck:
       test: "bash /health-check.sh"
       start_period: 2m
@@ -229,7 +231,8 @@ services:
     image: grafana/loki:2.8.3
     container_name: loki
     depends_on: 
-      - fluent-bit
+      fluent-bit:
+        condition: service_healthy
     ports:
       - "127.0.0.1:55502:3100"
     healthcheck:
@@ -244,7 +247,7 @@ services:
       - LOKI_URL=http://loki:3100/loki/api/v1/push
     volumes:
       - ./observability/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
-      - ./observability/fluent-bit/bash:/bin/sh
+      - ./observability/fluent-bit/bash:/bin/bash
       - ./observability/fluent-bit/wget:/bin/wget
     healthcheck:
       test: ["CMD", "wget", "-O", "/dev/null", "http://localhost:2020/api/v1/health"]
