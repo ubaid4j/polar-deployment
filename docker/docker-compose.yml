@@ -6,6 +6,10 @@ services:
     ports:
       - "127.0.0.1:50100:50100"
     environment:
+      JAVA_TOOL_OPTIONS: -javaagent:/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.29.0.jar
+      OTEL_SERVICE_NAME: catalog-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
       LOGGING_LEVEL_ROOT: DEBUG
       LOGGING_LEVEL_WEB: DEBUG
     depends_on: 
@@ -216,6 +220,8 @@ services:
         condition: service_healthy
       loki:
         condition: service_healthy
+      tempo:
+        condition: service_healthy
     ports:
       - "127.0.0.1:55501:3000"
     environment:
@@ -261,3 +267,13 @@ services:
     healthcheck:
       test: ["CMD", "wget", "-O", "/dev/null", "http://localhost:9090/-/ready"]
       start_period: 2m
+  tempo:
+    image: grafana/tempo:1.5.0
+    container_name: tempo
+    command: -config.file /etc/tempo-config.yml
+    ports:
+      - "127.0.0.1:55595:4317"
+    volumes:
+      - ./observability/tempo/tempo.yml:/etc/tempo-config.yml
+    healthcheck:
+      test: [ "CMD", "wget", "-O", "/dev/null", "http://localhost:3100/ready" ]
