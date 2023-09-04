@@ -15,6 +15,8 @@ services:
     depends_on: 
       fluent-bit:
         condition: service_healthy
+      tempo:
+        condition: service_healthy
     healthcheck:
       test: "bash /health-check.sh"
       start_period: 1m
@@ -30,6 +32,8 @@ services:
       polar-keycloak-docker:
         condition: service_healthy
       fluent-bit:
+        condition: service_healthy
+      tempo:
         condition: service_healthy
     image: ghcr.io/ubaid4j/edge-service:0.0.4-snapshot
     container_name: edge-service
@@ -47,6 +51,10 @@ services:
       - ORDER_SERVICE_URL=http://order-service:50201
       - SPA_URL=http://polar-ui:9004
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=TRACE
+      - JAVA_TOOL_OPTIONS=-javaagent:/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.29.0.jar
+      - OTEL_SERVICE_NAME=edge-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_METRICS_EXPORTER=none
     healthcheck:
       test: "bash /health-check.sh"
       start_period: 30s
