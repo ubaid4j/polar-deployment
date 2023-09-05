@@ -6,10 +6,6 @@ services:
     ports:
       - "127.0.0.1:50100:50100"
     environment:
-      JAVA_TOOL_OPTIONS: -javaagent:/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.29.0.jar
-      OTEL_SERVICE_NAME: catalog-service
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
-      OTEL_METRICS_EXPORTER: none
       LOGGING_LEVEL_ROOT: DEBUG
       LOGGING_LEVEL_WEB: DEBUG
     depends_on: 
@@ -76,7 +72,7 @@ services:
         condition: service_healthy
       fluent-bit:
         condition: service_healthy
-    image: ghcr.io/ubaid4j/catalog-service:0.0.4-snapshot
+    image: ghcr.io/ubaid4j/catalog-service:0.0.5-snapshot
     container_name: catalog-service
     ports:
       - "127.0.0.1:50101:50101"
@@ -88,6 +84,11 @@ services:
       - AUTH_SERVER_URL=http://polar-keycloak-docker:50907
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50102
+      - JAVA_TOOL_OPTIONS=-javaagent:/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.29.0.jar
+      - OTEL_SERVICE_NAME=catalog-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_METRICS_EXPORTER=none
+      - DEBUG=false
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:50101/management/health"]
       start_period: 45s
