@@ -72,7 +72,7 @@ services:
         condition: service_healthy
       fluent-bit:
         condition: service_healthy
-    image: ghcr.io/ubaid4j/catalog-service:0.0.5-snapshot
+    image: ghcr.io/ubaid4j/catalog-service:0.0.6-snapshot
     container_name: catalog-service
     ports:
       - "127.0.0.1:50101:50101"
