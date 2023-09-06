@@ -8,6 +8,10 @@ services:
     environment:
       LOGGING_LEVEL_ROOT: DEBUG
       LOGGING_LEVEL_WEB: DEBUG
+      JAVA_TOOL_OPTIONS: -javaagent:/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.29.0.jar
+      OTEL_SERVICE_NAME: config-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
     depends_on: 
       fluent-bit:
         condition: service_healthy
@@ -126,6 +130,10 @@ services:
       - DEBUG=true
       - BPL_DEBUG_ENABLED=true
       - BPL_DEBUG_PORT=50101
+      - JAVA_TOOL_OPTIONS=-javaagent:/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.29.0.jar
+      - OTEL_SERVICE_NAME=order-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_METRICS_EXPORTER=none
     healthcheck:
       test: "bash /health-check.sh"
       start_period: 2m
@@ -143,6 +151,10 @@ services:
     environment:
       - SPRING_RABBITMQ_HOST=polar-rabbitmq
       - SPRING_RABBITMQ_PORT=5672
+      - JAVA_TOOL_OPTIONS=-javaagent:/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.29.0.jar
+      - OTEL_SERVICE_NAME=dispatcher-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_METRICS_EXPORTER=none
     depends_on:
       polar-keycloak-docker:
         condition: service_healthy
