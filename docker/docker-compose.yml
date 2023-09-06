@@ -92,12 +92,11 @@ services:
       - OTEL_SERVICE_NAME=catalog-service
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
       - OTEL_METRICS_EXPORTER=none
-      - DEBUG=false
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:50101/management/health"]
+      test: "bash /health-check.sh"
       start_period: 45s
     volumes:
-      - ./catalog-service/config:/workspace/config
+      - ./catalog-service/health-check.sh:/health-check.sh
     logging:
       driver: fluentd
       options: 
