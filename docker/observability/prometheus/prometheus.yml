@@ -1,29 +1,29 @@
 global:
-  scrape_interval: 2s
+  scrape_interval: 30s
 
 scrape_configs:
   - job_name: 'edge-service'
-    scrape_interval: 2s
+    scrape_interval: 30s
     metrics_path: '/management/prometheus'
     static_configs:
       - targets: [ 'edge-service:50090' ]
   - job_name: 'catalog-service'
-    scrape_interval: 2s
+    scrape_interval: 30s
     metrics_path: '/management/prometheus'
     static_configs:
       - targets: [ 'catalog-service:50101' ]
   - job_name: 'order-service'
-    scrape_interval: 2s
+    scrape_interval: 30s
     metrics_path: '/management/prometheus'
     static_configs:
       - targets: [ 'order-service:50201' ]
   - job_name: 'dispatcher-service'
-    scrape_interval: 2s
+    scrape_interval: 30s
     metrics_path: '/management/prometheus'
     static_configs:
       - targets: [ 'dispatcher-service:50301' ]
   - job_name: 'config-service'
-    scrape_interval: 2s
+    scrape_interval: 30s
     metrics_path: '/management/prometheus'
     static_configs:
       - targets: [ 'config-service:50100' ]
