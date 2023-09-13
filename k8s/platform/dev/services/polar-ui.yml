@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: polar-ui
-          image: ghcr.io/ubaid4j/polar-ui:0.0.3-snapshot
+          image: ghcr.io/ubaid4j/polar-ui:0.0.4-snapshot
           env:
             - name: PORT
               value: "80"
