@@ -15,4 +15,4 @@ patches:
 images:
   - name: ghcr.io/ubaid4j/dispatcher-service
     newName: ghcr.io/ubaid4j/dispatcher-service
-    newTag: 0.0.3-snapshot
+    newTag: 0.0.5-snapshot
