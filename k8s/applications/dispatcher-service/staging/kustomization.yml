@@ -1,14 +1,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- github.com/ubaid4j/dispatcher-service/k8s?ref=main
+  - github.com/ubaid4j/dispatcher-service/k8s?ref=main
 configMapGenerator:
-- behavior: merge
-  files:
-  - application-prod.yml
-  name: dispatcher-config
+  - behavior: merge
+    files:
+      - application-prod.yml
+    name: dispatcher-config
 replicas:
-- count: 2
-  name: dispatcher-service
+  - count: 2
+    name: dispatcher-service
 patches:
-- path: patch-env.yml
+  - path: patch-env.yml
+images:
+  - name: ghcr.io/ubaid4j/dispatcher-service
+    newName: ghcr.io/ubaid4j/dispatcher-service
+    newTag: 0.0.3-snapshot
