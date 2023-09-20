@@ -16,3 +16,4 @@ replicas:
     name: catalog-service
 patches:
   - path: patch-env.yml
+  - path: patch-health.yml

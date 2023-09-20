@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-service
+spec:
+  selector:
+    matchLabels:
+      app: catalog-service
+  template:
+    spec:
+      containers:
+        - name: catalog-service
+          livenessProbe:
+            timeoutSeconds: 10
+          readinessProbe:
+            timeoutSeconds: 10
+    

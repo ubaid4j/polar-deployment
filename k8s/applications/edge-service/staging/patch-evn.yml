@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edge-service
+spec:
+  selector:
+    matchLabels:
+      app: edge-service
+  template:
+    spec:
+      containers:
+        - name: edge-service
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+    
