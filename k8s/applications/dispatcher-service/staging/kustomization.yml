@@ -12,6 +12,7 @@ replicas:
     name: dispatcher-service
 patches:
   - path: patch-env.yml
+  - path: patch-health.yaml
 images:
   - name: ghcr.io/ubaid4j/dispatcher-service
     newName: ghcr.io/ubaid4j/dispatcher-service

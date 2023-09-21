@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: catalog-service
+  name: order-service
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: catalog-service
+      app: order-service
   template:
     spec:
       containers:
-        - name: catalog-service
+        - name: order-service
           livenessProbe:
-            initialDelaySeconds: 220
-            timeoutSeconds: 3
-          readinessProbe:
             initialDelaySeconds: 150
             timeoutSeconds: 3
-    
+          readinessProbe:
+            initialDelaySeconds: 120
+            timeoutSeconds: 3
